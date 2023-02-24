@@ -1,5 +1,3 @@
-# backend-poc-group-b
-
 # Lambda Layers Example
 
 This project use the Serverless Framework to create a microservices architecture with AWS Lambda Layers.
@@ -27,3 +25,4 @@ follow following instructions:
 # Serverless
 
 ## Getting started
+
