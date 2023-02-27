@@ -2,7 +2,6 @@
  * @description Service class for users, contains crud operations for user data.
  */
  const user = {};
- const userRepository = require('../../repository/user')
  /**
   * @description Service method to return all users
   * @returns list of array
