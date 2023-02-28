@@ -5,6 +5,12 @@ provider:
   name: aws
   runtime: nodejs18.x
 
+workflows:
+  version: 2
+  unit-tests:
+    jobs:
+      - test
+
 layers:
   CommonDependenciesNodeModule:
     path: common_layer
@@ -45,3 +51,4 @@ functions:
       - {Ref: CommonDependenciesNodeModuleLambdaLayer}
 plugins:
   - serverless-offline
+  - serverless-sequelize-migrations

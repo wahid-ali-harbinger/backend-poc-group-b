@@ -2,12 +2,23 @@
   "author": "kumar",
   "version": "1.0.0",
   "scripts": {
+    "test": "jest",
+    "migrate": "sequelize-cli db:migrate",
     "start": "sls offline",
     "deploy": "sls deploy",
     "deployPro": "sls deploy --stage production"
   },
   "devDependencies": {
+    "jest": "^29.4.3",
+    "sequelize-cli": "^6.6.0",
     "serverless": "^3.27.0",
-    "serverless-offline": "^12.0.4"
+    "serverless-offline": "^12.0.4",
+    "serverless-sequelize-migrations": "^1.1.1"
+  },
+  "dependencies": {
+    "pg": "^8.9.0",
+    "pg-hstore": "^2.3.4",
+    "sequelize": "^6.29.0",
+    "uuid": "^9.0.0"
   }
 }
