@@ -1,10 +1,10 @@
 {
   "development": {
-    "username": "root",
-    "password": "root",
-    "database": "posdev",
+    "username": "postgres",
+    "password": "lluna",
+    "database": "poc",
     "host": "127.0.0.1",
-    "port":"5433",
+    "port":"5432",
     "dialect": "postgres"
   },
   "test": {
