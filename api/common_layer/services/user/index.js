@@ -3,12 +3,13 @@
  */
 const user = {};
 const db = require('../../../models')
+
 /**
  * @description Service method to return all users
  * @returns list of array
  */
 user.getUsers = async function () {
-  const users = await db.user.findAll()
+  const users = await db.user.findAll({ where: { deleted: false } })
   let _data = [];
   users.map((data) => {
     _data.push(data);
@@ -43,6 +44,12 @@ user.getUserDetails = async function (userId) {
  * @returns returns user id of newely created record
  */
 user.addUser = async function (basicInfo, academicInfo, employementInfo) {
+  const existingUser = await db.user.findAll({ where: { email: basicInfo.email } })
+  if (existingUser.length > 0) {
+    return {
+      error: 'Email Already Exist!'
+    }
+  }
   const user = await db.user.create({
     firstName: basicInfo.firstName,
     lastName: basicInfo.lastName,
@@ -66,7 +73,10 @@ user.addUser = async function (basicInfo, academicInfo, employementInfo) {
     })
   })
   return {
-    id: userId
+    id: userId,
+    firstName: basicInfo.firstName,
+    lastName: basicInfo.lastName,
+    email: basicInfo.email
   }
 }
 
@@ -77,45 +87,53 @@ user.addUser = async function (basicInfo, academicInfo, employementInfo) {
  */
 user.updateUser = async function (basicInfo, academicInfo, employementInfo) {
   const userId = basicInfo?.id
+  
   await db.user.update({
     firstName: basicInfo.firstName,
     lastName: basicInfo.lastName,
     email: basicInfo.email
   }, { where: { id: userId } })
+  await db.academic.destroy({where:{user_id:userId},truncate: true})
   academicInfo.map(async _a => {
-    if (_a.id) {
-      await db.academic.update({
-        type: _a.type,
-        institute: _a.institute,
-        passingYear: _a.passingYear
-      }, { where: { id: _a.id } })
-    } else {
       await db.academic.create({
         user_id: userId,
         type: _a.type,
         institute: _a.institute,
         passingYear: _a.passingYear
       })
-    }
   })
+  await db.employement.destroy({where:{user_id:userId},truncate: true})
   employementInfo.map(async _e => {
-    if (_e.id) {
-      await db.employement.update({
-        employeeCode: _e.employeeCode,
-        companyName: _e.companyName,
-        designation: _e.designation
-      }, { where: { id: _e.id } })
-    } else {
       await db.employement.create({
         user_id: userId,
         employeeCode: _e.employeeCode,
         companyName: _e.companyName,
         designation: _e.designation
       })
-    }
   })
   return {
     id: userId,
+    firstName: basicInfo.firstName,
+    lastName: basicInfo.lastName,
+    email: basicInfo.email
+  }
+}
+
+/**
+ * @description Method to updated user
+ * @param {*} body 
+ * @returns return user id updated user record
+ */
+user.deleteUser = async function (userId) {
+  const _user = await db.user.update({
+    deleted: true
+  }, { where: { id: userId } })
+  if (_user?.[0] == 1) {
+    return {
+      id: userId
+    }
+  } else {
+    return null
   }
 }
 module.exports = user;
